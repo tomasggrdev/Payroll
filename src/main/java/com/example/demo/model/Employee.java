@@ -5,7 +5,10 @@ import javax.persistence.Entity;
 import javax.persistence.*;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+
+import com.sun.istack.NotNull;
 import lombok.Data;
+import org.springframework.validation.annotation.Validated;
 
 @Data
 @Entity
@@ -15,7 +18,7 @@ public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    
+
     private String name;
     @Column(name = "lastname")
     private String lastName;

@@ -2,30 +2,24 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Employee;
+import com.example.demo.model.dto.response.EmployeeResponse;
 import com.example.demo.repository.EmployeeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.CollectionModel;
+import com.example.demo.service.EmployeeService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 @RestController
 @RequestMapping("/api/v1/employees/")
+@RequiredArgsConstructor
 public class EmployeeController {
     
-    @Autowired
-    private EmployeeRepository repository;
-    
-    @Autowired
-    private EmployeeModelAssembler assembler;
-    
+    private final EmployeeRepository repository;
+    private final EmployeeModelAssembler assembler;
+    private final EmployeeService employeeService;
+
 //    @GetMapping("/")
 //    public CollectionModel<EntityModel<Employee>> all(){
 //        List<EntityModel<Employee>> employees = repository.findAll().stream()
@@ -36,12 +30,8 @@ public class EmployeeController {
 //    }
 
     @GetMapping("/")
-    public CollectionModel<EntityModel<Employee>> all(){
-        List<EntityModel<Employee>> employees = repository.findAll().stream()
-                .map(assembler::toModel).collect(Collectors.toList());
-
-
-        return CollectionModel.of(employees,linkTo(methodOn(EmployeeController.class).all()).withSelfRel());
+    public ResponseEntity<EmployeeResponse> all(){
+        return employeeService.findAllEmployees();
     }
 
     @PostMapping("/")
@@ -61,7 +51,7 @@ public class EmployeeController {
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<?> replaceEmploye(@RequestBody Employee newEmployee, @PathVariable Long id){
+    public ResponseEntity<?> replaceEmploye(@RequestBody Employee newEmployee,  @PathVariable Long id){
         
         Employee updateEmployee = repository.findById(id).map(employee -> {
             employee.setName(newEmployee.getName());
