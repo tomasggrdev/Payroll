@@ -1,6 +1,10 @@
 
-package com.example.demo.controller;
+package com.example.demo.exceptions;
 
+
+import lombok.Data;
+
+import java.util.function.Supplier;
 
 public class EmployeeNotFountException extends RuntimeException {
 
